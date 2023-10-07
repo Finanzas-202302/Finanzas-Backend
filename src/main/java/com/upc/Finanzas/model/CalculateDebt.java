@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "clients")
+@Table(name = "calculate_debts")
 public class CalculateDebt {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,4 +39,9 @@ public class CalculateDebt {
     foreignKey = @ForeignKey(name = "FK_CALCULATEDEBT_CLIENT_ID"))
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private Client client;
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false,
+            foreignKey = @ForeignKey(name = "FK_DEBTRESULT_USER_ID"))
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    private User user;
 }
