@@ -1,4 +1,7 @@
 package com.upc.Finanzas.repository;
 
-public interface DebtResultRepository {
+import com.upc.Finanzas.model.DebtResult;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface DebtResultRepository extends JpaRepository<DebtResult, Long> {
 }

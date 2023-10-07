@@ -41,7 +41,7 @@ public class CalculateDebt {
     private Client client;
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false,
-            foreignKey = @ForeignKey(name = "FK_DEBTRESULT_USER_ID"))
+            foreignKey = @ForeignKey(name = "FK_CALCULATEDEBT_USER_ID"))
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private User user;
 }

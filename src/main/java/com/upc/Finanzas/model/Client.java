@@ -33,7 +33,7 @@ public class Client {
     //deuda pendiente (relación con la tabla resultado)
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false,
-    foreignKey = @ForeignKey(name = "FK_USER_ID"))
+            foreignKey = @ForeignKey(name = "FK_CLIENT_USER_ID"))
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private User user;
     @OneToMany(mappedBy = "client", cascade = CascadeType.ALL)
