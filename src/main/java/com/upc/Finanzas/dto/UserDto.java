@@ -18,6 +18,4 @@ public class UserDto {
     private String lastname;
     private String email;
     private String password;
-    private List<Client> clients;
-    private List<DebtResult> debtResults;
 }
