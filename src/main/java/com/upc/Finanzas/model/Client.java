@@ -29,8 +29,7 @@ public class Client {
     private Long dni;
     @Column(name = "vehicle", nullable = false, length = 25)
     private String vehicle;
-    //agregar
-    //deuda pendiente (relación con la tabla resultado)
+    //relaciones
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false,
             foreignKey = @ForeignKey(name = "FK_CLIENT_USER_ID"))
