@@ -29,18 +29,16 @@ public class UserController {
     //Method: GET
     @Transactional(readOnly = true)
     @GetMapping
-    public ResponseEntity<List<UserDto>> getAllUsers(){
+    public ResponseEntity<List<User>> getAllUsers(){
         List<User> users = userService.getAll();
-        return new ResponseEntity<List<UserDto>>(users.stream()
-                .map(this::convertToDto)
-                .collect(Collectors.toList()), HttpStatus.OK);
+        return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
     //URL:http://localhost:8080/api/bank/v1/users/{userId}
     //Method: GET
     @Transactional(readOnly = true)
     @GetMapping("/{userId}")
-    public ResponseEntity<UserDto> getUserById(@PathVariable(name = "UserId") Long userId){
+    public ResponseEntity<UserDto> getUserById(@PathVariable(name = "userId") Long userId){
         existsUserByUserId(userId);
         User user = userService.getById(userId);
         UserDto userDto = convertToDto(user);
@@ -63,7 +61,7 @@ public class UserController {
     //URL:http://localhost:8080/api/bank/v1/users/{userId}
     //Method: DELETE
     @Transactional
-    @DeleteMapping("/userId")
+    @DeleteMapping("/{userId}")
     public ResponseEntity<Void> deleteUser(@PathVariable(name = "userId") Long userId){
         existsUserByUserId(userId);
         userService.delete(userId);

@@ -20,6 +20,4 @@ public class ClientDto {
     private Long dni;
     private String vehicle;
     private Long userId;
-    private List<CalculateDebt> calculateDebts;
-    private List<DebtResult> debtResults;
 }

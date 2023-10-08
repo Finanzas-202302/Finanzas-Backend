@@ -8,5 +8,6 @@ import java.util.List;
 public interface ClientRepository extends JpaRepository<Client, Long> {
     boolean existsById(Long clientId);
     Client findClientBydni(Long dni);
+    boolean existsByDni(Long clientDni);
     List<Client> findAll();
 }
