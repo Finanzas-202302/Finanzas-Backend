@@ -44,7 +44,7 @@ public class ClientController {
     //Method: GET
     @Transactional(readOnly = true)
     @GetMapping("/{clientId}")
-    public ResponseEntity<ClientDto> getClientById(@PathVariable(name = "ClientId") Long clientId){
+    public ResponseEntity<ClientDto> getClientById(@PathVariable(name = "clientId") Long clientId){
         existsClientByClientId(clientId);
         Client client = clientService.getById(clientId);
         ClientDto clientDto = convertToDto(client);
@@ -62,6 +62,14 @@ public class ClientController {
         Client createdClient = clientService.create(client);
         ClientDto createdClientDto = convertToDto(createdClient);
         return new ResponseEntity<>(createdClientDto, HttpStatus.OK);
+    }
+
+    @Transactional
+    @DeleteMapping("/{clientId}")
+    public ResponseEntity<Void> deleteClient(@PathVariable(name = "clientId") Long clientId){
+        existsClientByClientId(clientId);
+        clientService.delete(clientId);
+        return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
     }
 
     private Client convertToEntity(ClientDto clientDto){
@@ -85,6 +93,7 @@ public class ClientController {
                 .email(client.getEmail())
                 .dni(client.getDni())
                 .vehicle(client.getVehicle())
+                .userId(client.getUser().getId())
                 .build();
     }
     private void existsClientByClientId(Long clientId){

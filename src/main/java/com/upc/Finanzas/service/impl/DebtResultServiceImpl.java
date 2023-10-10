@@ -1,5 +1,6 @@
 package com.upc.Finanzas.service.impl;
 
+import com.upc.Finanzas.model.CalculateDebt;
 import com.upc.Finanzas.model.DebtResult;
 import com.upc.Finanzas.repository.DebtResultRepository;
 import com.upc.Finanzas.service.DebtResultService;
