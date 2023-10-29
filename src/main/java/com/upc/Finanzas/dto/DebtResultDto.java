@@ -7,13 +7,14 @@ import lombok.NoArgsConstructor;
 
 @Data
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class DebtResultDto {
-    private Double fee_payable; //cuota a pagar
-    private Double amortization; //amortización
-    private Double interests; //intereses
-    private Double outstanding_debt; //deuda pendiente
+    private Double fee_payable;
+    private Double amortization;
+    private Double interests;
+    private Double outstanding_debt;
+    private Double van;
+    private Double tir;
     private Long clientId;
-    private Long userId;
 }

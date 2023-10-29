@@ -1,13 +1,9 @@
 package com.upc.Finanzas.dto;
 
-import com.upc.Finanzas.model.CalculateDebt;
-import com.upc.Finanzas.model.DebtResult;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.List;
 
 @Data
 @Builder

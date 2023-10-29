@@ -29,6 +29,4 @@ public class User {
     //relaciones
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Client> clients;
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<DebtResult> debtResults;
 }

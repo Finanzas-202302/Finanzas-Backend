@@ -38,11 +38,10 @@ public class UserController {
     //Method: GET
     @Transactional(readOnly = true)
     @GetMapping("/{userId}")
-    public ResponseEntity<UserDto> getUserById(@PathVariable(name = "userId") Long userId){
+    public ResponseEntity<User> getUserById(@PathVariable(name = "userId") Long userId){
         existsUserByUserId(userId);
         User user = userService.getById(userId);
-        UserDto userDto = convertToDto(user);
-        return new ResponseEntity<UserDto>(userDto, HttpStatus.OK);
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
     //URL:http://localhost:8080/api/bank/v1/users/register

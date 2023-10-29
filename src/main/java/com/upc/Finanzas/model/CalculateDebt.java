@@ -1,5 +1,6 @@
 package com.upc.Finanzas.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -28,20 +29,28 @@ public class CalculateDebt {
     @Column(name = "type_grace_period", nullable = false, length = 7)
     private String type_grace_period; //tipo de periodo de gracia
     @Column(name = "cost_vehicle", nullable = false, length = 25)
-    private Long cost_vehicle; //costo del vehiculo
+    private Double cost_vehicle; //costo del vehiculo
     @Column(name = "term_of_loan", nullable = false, length = 25)
     private Long term_of_loan; //plazo del prestamo
     @Column(name = "type_of_term", nullable = false, length = 25)
     private String type_of_term; //tipo de plazo del prestamo
+    @Column(name = "fee_payable", nullable = true, length = 25)
+    private Double fee_payable; //cuota a pagar
+    @Column(name = "amortization", nullable = true, length = 25)
+    private Double amortization; //amortización
+    @Column(name = "interests", nullable = true, length = 25)
+    private Double interests; //intereses
+    @Column(name = "outstanding_debt", nullable = true, length = 25)
+    private Double outstanding_debt; //deuda pendiente
+    @Column(name = "van", nullable = true, length = 25)
+    private Double van;
+    @Column(name = "tir", nullable = true, length = 25)
+    private Double tir;
     //relaciones
     @ManyToOne
     @JoinColumn(name = "client_id", nullable = false,
-    foreignKey = @ForeignKey(name = "FK_CALCULATEDEBT_CLIENT_ID"))
+            foreignKey = @ForeignKey(name = "FK_CALCULATEDEBT_CLIENT_ID"))
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @JsonIgnore
     private Client client;
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false,
-            foreignKey = @ForeignKey(name = "FK_CALCULATEDEBT_USER_ID"))
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    private User user;
 }

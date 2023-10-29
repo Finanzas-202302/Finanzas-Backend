@@ -33,28 +33,25 @@ public class ClientController {
     //Method: GET
     @Transactional(readOnly = true)
     @GetMapping
-    public ResponseEntity<List<ClientDto>> getAllClients(){
+    public ResponseEntity<List<Client>> getAllClients(){
         List<Client> clients = clientService.getAll();
-        return new ResponseEntity<List<ClientDto>>(clients.stream()
-                .map(this::convertToDto)
-                .collect(Collectors.toList()),HttpStatus.OK);
+        return new ResponseEntity<>(clients, HttpStatus.OK);
     }
 
     //URL:http://localhost:8080/api/bank/v1/clients/{clientId}
     //Method: GET
     @Transactional(readOnly = true)
     @GetMapping("/{clientId}")
-    public ResponseEntity<ClientDto> getClientById(@PathVariable(name = "clientId") Long clientId){
+    public ResponseEntity<Client> getClientById(@PathVariable(name = "clientId") Long clientId){
         existsClientByClientId(clientId);
         Client client = clientService.getById(clientId);
-        ClientDto clientDto = convertToDto(client);
-        return new ResponseEntity<ClientDto>(clientDto, HttpStatus.OK);
+        return new ResponseEntity<>(client, HttpStatus.OK);
     }
 
     //URL:http://localhost:8080/api/bank/v1/clients
     //Method: POST
     @Transactional
-    @PostMapping
+    @PostMapping("/register")
     public ResponseEntity<ClientDto> createClient(@RequestBody ClientDto clientDto){
         Client client = convertToEntity(clientDto);
         validateClient(client);
@@ -98,7 +95,7 @@ public class ClientController {
     }
     private void existsClientByClientId(Long clientId){
         if(clientService.getById(clientId) == null){
-            throw new ResourceNotFoundException("No existe un cliente on el id " + clientId);
+            throw new ResourceNotFoundException("No existe un cliente con el id " + clientId);
         }
     }
     private void validateClient(Client client){
