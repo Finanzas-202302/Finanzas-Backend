@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -27,23 +28,28 @@ public class CalculateDebt {
     @Column(name = "interest_rate", nullable = false, length = 8)
     private String interest_rate;
     //PERIODO DE CAPITALIZACIÓN: MENSUAL, BIMESTRAL, ETC
-    @Column(name = "periodo_de_capitalizacion", nullable = false, length = 25)
+    @Column(name = "periodo_de_capitalizacion", nullable = true, length = 25)
     private String periodo_de_capitalizacion;
+    //CAPITALIZACION ESPECIAL
+    @Column(name = "capitalizacion_especial", nullable = true, length = 10)
+    private Integer capitalizacion_especial;
     // PLAZO DE TASA: MENSUAL, BIMESTRAL, ETC
     @Column(name = "plazo_tasa_interes", nullable = false, length = 25)
     private String plazo_tasa_interes;
     //PLAZO DE TASA ESPECIAL
-    @Column(name = "plazo_interes_especial", nullable = false, length = 10)
+    @Column(name = "plazo_interes_especial", nullable = true, length = 10)
     private Integer plazo_interes_especial;
     // TASA DE INTERÉS EN PORCENTAJE (SE AGREGA EL VALOR SIN %: SI ES 10% SE INGRESA 10)
     @Column(name = "interest_rate_percentage", nullable = false, length = 10)
     private Double interest_rate_percentage;
+    ////////////////////////////
     // PERIODO DE GRACIA EN MESES
-    @Column(name = "grace_period", nullable = false, length = 25)
+    @Column(name = "grace_period", nullable = true, length = 25)
     private Long grace_period;
     // TIPO DE PERIODO DE GRACIA: PARCIAL, TOTAL O SIN PERIODO DE GRACIA
-    @Column(name = "type_grace_period", nullable = false, length = 25)
+    @Column(name = "type_grace_period", nullable = true, length = 25)
     private String type_grace_period;
+    /////////////////////////
     // PORCENTAJE DE CUOTA INICIAL: 20% O 30%
     @Column(name = "initial_fee_percentage", nullable = false, length = 25)
     private Long cuota_inicial_percentage;
@@ -56,9 +62,6 @@ public class CalculateDebt {
     // PORCENTAJE DE SEGURO DESGRAVAMEN
     @Column(name = "degravamen", nullable = false, length = 25)
     private Double seguro_desgravamen;
-    // TIPO DE TASA DE SEGURO DESGRAVAMEN: EFECTIVA O NOMINAL
-    @Column(name = "desgravamen_tipo", nullable = false, length = 25)
-    private String desgravamen_tipo;
     // VFMG: 40% O 50%
     @Column(name = "vfmg_percentage", nullable = false, length = 10)
     private Long vfmg_percentage;
@@ -66,31 +69,44 @@ public class CalculateDebt {
     @Column(name = "credit_percentage", nullable = false, length = 10)
     private Long credit_percentage;
     // COK
-    @Column(name = "cok", nullable = false, length = 10)
+    @Column(name = "cok", nullable = true, length = 10)
     private Double COK;
-    // COSTOS PERIODICOS
-    @Column(name = "costos_periodicos", nullable = false, length = 25)
-    private Double costos_periodicos;
     // COSTOS INICIALES
-    @Column(name = "costos_iniciales", nullable = false, length = 25)
-    private Double costos_iniciales;
-    // CUOTA INICIAL VALOR: 20% o 30%
-    @Column(name = "initial_fee", nullable = true, length = 25)
-    private Double cuota_inicial;
-    //Lista de proceso
-    //private List<Result> lista_resultado;
-    // VFMG VALOR: 40% o 50%
-    @Column(name = "vfmg", nullable = true, length = 25)
-    private Double vfmg;
-    // CREDITO A PAGAR VALOR: 30% o 40%
-    @Column(name = "credit", nullable = true, length = 25)
-    private Double credit;
-    // VAN
-    @Column(name = "van", nullable = true, length = 25)
-    private Double van;
-    // TIR
-    @Column(name = "tir", nullable = true, length = 25)
-    private Double tir;
+    @Column(name = "costos_notariales", nullable = true, length = 25)
+    private Double costos_notariales;
+    @Column(name = "costos_notariales_bool", nullable = true, length = 25)
+    private Boolean costos_notariales_bool;
+    @Column(name = "costos_registrales", nullable = true, length = 25)
+    private Double costos_registrales;
+    @Column(name = "costos_registrales_bool", nullable = true, length = 25)
+    private Boolean costos_registrales_bool;
+    @Column(name = "tasacion", nullable = true, length = 25)
+    private Double tasacion;
+    @Column(name = "tasacion_bool", nullable = true, length = 25)
+    private Boolean tasacion_bool;
+    @Column(name = "estudio_de_titulos", nullable = true, length = 25)
+    private Double estudio_de_titulos;
+    @Column(name = "estudio_de_titulos_bool", nullable = true, length = 25)
+    private Boolean estudio_de_titulos_bool;
+    @Column(name = "otros_costes", nullable = true, length = 25)
+    private Double otros_costes;
+    @Column(name = "otros_costes_bool", nullable = true, length = 25)
+    private Boolean otros_costes_bool;
+    //COSTOS PERIODICOS
+    @Column(name = "portes", nullable = true, length = 25)
+    private Boolean portes;
+    @Column(name = "gastos_administrativos", nullable = true, length = 25)
+    private Boolean gastos_administrativos;
+    @Column(name = "comision", nullable = true, length = 25)
+    private Boolean comision;
+    @Column(name = "penalidad", nullable = true, length = 25)
+    private Boolean penalidad;
+    @Column(name = "comunicacion", nullable = true, length = 25)
+    private Boolean comunicacion;
+    @Column(name = "seguridad", nullable = true, length = 25)
+    private Boolean seguridad;
+    @Column(name = "otros", nullable = true, length = 25)
+    private Boolean otros;
     //relaciones
     @ManyToOne
     @JoinColumn(name = "client_id", nullable = false,
@@ -98,5 +114,8 @@ public class CalculateDebt {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @JsonIgnore
     private Client client;
+
+    @OneToMany(mappedBy = "calculateDebt", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PaymentPlan> paymentPlans = new ArrayList<>();
 }
 

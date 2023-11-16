@@ -1,66 +1,129 @@
 package com.upc.Finanzas;
 
 import com.upc.Finanzas.model.CalculateDebt;
+import com.upc.Finanzas.model.PaymentPlan;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Algoritmo {
-    public static void calcularCuota(CalculateDebt debt_info){
-        //DEFINIR VARIABLES QUE SE INGRESAN
-        Double precio_vehiculo = debt_info.getCost_vehicle().doubleValue();
-        Double cuota_inicial = (debt_info.getCuota_inicial_percentage().doubleValue() / 100.0) * precio_vehiculo; // 20% o 30%
-        Double prestamo = precio_vehiculo - cuota_inicial;
-        Double financiamiento = precio_vehiculo * (debt_info.getCredit_percentage().doubleValue() / 100.0); //30% o 40%
-        Double cuoton = precio_vehiculo * (debt_info.getVfmg_percentage().doubleValue() / 100.0); //50% o 40%, cuota final
-        Double cok = debt_info.getCOK() / 100.0;
-        Double plazo = debt_info.getTerm_of_loan().doubleValue(); //24 o 36
-        Double costos_periodicos = debt_info.getCostos_periodicos();
-        Double costos_iniciales = debt_info.getCostos_iniciales();
-        String tipo_tasa_interes = debt_info.getInterest_rate().toLowerCase();
-        Double tasa_interes_porcentaje = debt_info.getInterest_rate_percentage();
-        Integer plazo_tasa_interes = 0;
-        Integer periodo_capitalizacion = 0;
-        //CAMBIAR TASA EFECTIVA A MENSUAL (NOMINAL A EFECTIVA)
-        switch (debt_info.getPlazo_tasa_interes().toLowerCase()) {
-            case "anual" -> plazo_tasa_interes = 360;
-            case "semestral" -> plazo_tasa_interes = 180;
-            case "cuatrimestral" -> plazo_tasa_interes = 120;
-            case "trimestral" -> plazo_tasa_interes = 90;
-            case "bimestral" -> plazo_tasa_interes = 60;
-            case "mensual" -> plazo_tasa_interes = 30;
-            case "quincenal" -> plazo_tasa_interes = 15;
-            case "diario" -> plazo_tasa_interes = 1;
-            //agregar especial
-        }
-        switch (debt_info.getPeriodo_de_capitalizacion().toLowerCase()) {
-            case "anual" -> periodo_capitalizacion = 360;
-            case "semestral" -> periodo_capitalizacion = 180;
-            case "cuatrimestral" -> periodo_capitalizacion = 120;
-            case "trimestral" -> periodo_capitalizacion = 90;
-            case "bimestral" -> periodo_capitalizacion = 60;
-            case "mensual" -> periodo_capitalizacion = 30;
-            case "quincenal" -> periodo_capitalizacion = 15;
-            case "diario" -> periodo_capitalizacion = 1;
-            //agregar especial
-        }
-        if(tipo_tasa_interes == "nominal"){
-            tasa_interes_porcentaje = Math.pow(1 + (debt_info.getInterest_rate_percentage() / 100) / (periodo_capitalizacion / plazo_tasa_interes), 30 / periodo_capitalizacion) - 1;
-        }
-        else-if(tipo_tasa_interes == "efectiva"){
-            tasa_interes_porcentaje = Math.pow(1 + (debt_info.getInterest_rate_percentage() / 100), (30/plazo_tasa_interes));
-        }
-        /*
-        porcentaje de seguro desgravamen
-        if(tipo de interes == nominal) formula
-        else == debt_info.getPorcentaje de desgravamen
-        */
-        /*
-        logica para el periodo de gracia
-        */
+    private static CalculateDebt info;
+    private static Double tasa_de_interes;
+    private static Double cuota_inicial;
+    private static Double financiar;
+    private static Double interes;
+    private static Double seguro_desgravamen;
+    private static Double financiamiento;
+    private static Double amortizacion;
+    private static Double cuota_final;
+    private static Double costo_vehiculo;
+    private static Double costo_prestamo;
+    private static Double seguro_desgravamen_tasa;
+    private static Double plazo;
+    public Algoritmo(CalculateDebt calculateDebt){
+        this.info = calculateDebt;
+        costo_vehiculo = 0.0;
+        cuota_inicial = 0.0;
+        financiar = 0.0;
+        financiamiento = 0.0;
+        cuota_final = 0.0;
+        plazo = 0.0;
+        costo_prestamo = 0.0;
+        seguro_desgravamen = 0.0;
+        amortizacion = 0.0;
+    }
+    public static void convertData(){
 
-        //DEFINIR VARIABLES QUE SE CALCULAN
-        double intereses;
-        double amortizacion;
-        double seguro_desgravamen;
+        //CONVERTIR PLAZO DE TASA
+        if(info.getPlazo_tasa_interes().equals("anual")) plazo = 360.0;
+        if(info.getPlazo_tasa_interes().equals("semestral")) plazo = 180.0;
+        if(info.getPlazo_tasa_interes().equals("cuatrimestral")) plazo = 120.0;
+        if(info.getPlazo_tasa_interes().equals("trimestral")) plazo = 90.0;
+        if(info.getPlazo_tasa_interes().equals("bimestral")) plazo = 60.0;
+        if(info.getPlazo_tasa_interes().equals("mensual")) plazo = 30.0;
+        if(info.getPlazo_tasa_interes().equals("quincenal")) plazo = 15.0;
+        if(info.getPlazo_tasa_interes().equals("diario")) plazo = 1.0;
+        if(info.getPlazo_tasa_interes().equals("especial")) plazo = Double.valueOf(info.getPlazo_interes_especial());
+
+        //CONVERTIR TASA DE INTERÉS
+        if(info.getInterest_rate().toLowerCase().equals("nominal")){
+            if(info.getPeriodo_de_capitalizacion().equals("anual")) tasa_de_interes = Math.pow((1 + ((info.getInterest_rate_percentage()/100.0)/(plazo/360.0))),(30/360.0)) - 1;
+            if(info.getPeriodo_de_capitalizacion().equals("semestral")) tasa_de_interes = Math.pow((1 + ((info.getInterest_rate_percentage()/100.0)/(plazo/180.0))),(30/180.0)) - 1;
+            if(info.getPeriodo_de_capitalizacion().equals("cuatrimestral")) tasa_de_interes = Math.pow((1 + ((info.getInterest_rate_percentage()/100.0)/(plazo/120.0))),(30/120.0)) - 1;
+            if(info.getPeriodo_de_capitalizacion().equals("trimestral")) tasa_de_interes = Math.pow((1 + ((info.getInterest_rate_percentage()/100.0)/(plazo/90.0))),(30/90.0)) - 1;
+            if(info.getPeriodo_de_capitalizacion().equals("bimestral")) tasa_de_interes = Math.pow((1 + ((info.getInterest_rate_percentage()/100.0)/(plazo/60.0))),(30/60.0)) - 1;
+            if(info.getPeriodo_de_capitalizacion().equals("mensual")) tasa_de_interes = Math.pow((1 + ((info.getInterest_rate_percentage()/100.0)/(plazo/30.0))),(30/30.0)) - 1;
+            if(info.getPeriodo_de_capitalizacion().equals("quincenal")) tasa_de_interes = Math.pow((1 + ((info.getInterest_rate_percentage()/100.0)/(plazo/15.0))),(30/150.0)) - 1;
+            if(info.getPeriodo_de_capitalizacion().equals("diario")) tasa_de_interes = Math.pow((1 + ((info.getInterest_rate_percentage()/100.0)/(plazo/1.0))),(30/1.0)) - 1;
+            if(info.getPeriodo_de_capitalizacion().equals("especial")) tasa_de_interes = Math.pow((1 + ((info.getInterest_rate_percentage()/100.0)/(plazo/Double.valueOf(info.getCapitalizacion_especial())))),(30/Double.valueOf(info.getCapitalizacion_especial()))) - 1;
+        } else if (info.getInterest_rate().toLowerCase().equals("efectiva")) tasa_de_interes = Math.pow(1 + (info.getInterest_rate_percentage()/100.0), (30/plazo)) - 1;
+
+        //COSTOS INICIALES DE LA COMPRA INTELIGENTE
+        if(info.getCostos_notariales() != null){
+            if(info.getCostos_notariales_bool()) costo_prestamo += info.getCostos_notariales();
+            else costo_prestamo += 0.0;
+        }
+        if(info.getCostos_registrales() != null){
+            if(info.getCostos_registrales_bool()) costo_prestamo += info.getCostos_registrales();
+            else costo_prestamo += 0.0;
+        }
+        if(info.getTasacion() != null){
+            if(info.getTasacion_bool()) costo_prestamo += info.getTasacion();
+            else costo_prestamo += 0.0;
+        }
+        if(info.getEstudio_de_titulos() != null){
+            if(info.getEstudio_de_titulos_bool()) costo_prestamo += info.getEstudio_de_titulos();
+            else costo_prestamo += 0.0;
+        }
+        if(info.getOtros_costes() != null){
+            if(info.getOtros_costes_bool()) costo_prestamo += info.getOtros_costes();
+            else costo_prestamo += 0.0;
+        }
+        costo_vehiculo = Double.valueOf(info.getCost_vehicle());
+        costo_prestamo += costo_vehiculo;
+        cuota_inicial = costo_prestamo * info.getCuota_inicial_percentage()/100.0;
+        financiar = costo_prestamo * (1.0 - info.getCuota_inicial_percentage()/100.0);
+        financiamiento = costo_prestamo * info.getCredit_percentage()/100.0;
+        seguro_desgravamen_tasa = info.getSeguro_desgravamen()/100.0;
+    }
+    public static List<PaymentPlan> calculatePaymentPlan(CalculateDebt calculateDebt){
+        convertData();
+        Double interes_sobre_financiamiento;
+        Double desgravamen_sobre_financiamiento;
+        Double cuota_financiamiento;
+        Double saldo_inicial = financiamiento;
+        Double saldo_final = 0.0;
+        //CREAMOS LA LISTA
+        List<PaymentPlan> paymentPlans = new ArrayList<>();
+        interes_sobre_financiamiento = tasa_de_interes * financiamiento;
+        desgravamen_sobre_financiamiento = seguro_desgravamen_tasa * financiamiento;
+
+        for(int period_number = 1; period_number <= info.getTerm_of_loan(); period_number++){
+            PaymentPlan paymentPlan = new PaymentPlan();
+            paymentPlan.setCalculateDebt(info);
+            paymentPlan.setPeriodNumber(period_number);
+            LocalDate dueDate = LocalDate.now().plusMonths(period_number);
+            paymentPlan.setDueDate(dueDate);
+            // Calcular los componentes del pago mensual
+            interes = tasa_de_interes * financiar;
+            seguro_desgravamen = seguro_desgravamen_tasa * financiar;
+            cuota_financiamiento = (financiamiento * (tasa_de_interes + seguro_desgravamen_tasa)) / (1 - Math.pow((1 + (tasa_de_interes + seguro_desgravamen_tasa)), info.getTerm_of_loan() * -1));
+            amortizacion = cuota_financiamiento - financiamiento*tasa_de_interes - financiamiento*seguro_desgravamen_tasa;
+            saldo_final = saldo_inicial - amortizacion;
+            // Configurar los valores en el objeto PaymentPlan
+            paymentPlan.setSaldo_inicial(saldo_inicial);
+            paymentPlan.setInteres(interes);
+            paymentPlan.setAmortizacion(amortizacion);
+            paymentPlan.setSeguro_desgravamen(seguro_desgravamen);
+            paymentPlan.setCuota_financiamiento(cuota_financiamiento);
+            paymentPlan.setSaldo_final(saldo_final);
+
+            paymentPlans.add(paymentPlan);
+            saldo_inicial = saldo_final;
+        }
+
+        return paymentPlans;
     }
 }
