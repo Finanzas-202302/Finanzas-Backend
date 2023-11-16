@@ -62,7 +62,6 @@ public class CalculateDebtController {
         //validateClient(debt);
         CalculateDebt createdDebt = calculateDebtService.create(debt);
         EnterDataDebtDto createdDebtDto = convertToDto(createdDebt);
-        Algoritmo algoritmo = new Algoritmo(createdDebt);
         return new ResponseEntity<>(createdDebtDto, HttpStatus.OK);
     }
     // URL: http://localhost:8080/api/bank/v1/calculate-debt/{calculateDebtId}/generate-payment-plans
@@ -72,8 +71,8 @@ public class CalculateDebtController {
     public ResponseEntity<List<PaymentPlan>> generatePaymentPlans(@PathVariable(name = "calculateDebtId") Long calculateDebtId) {
         CalculateDebt calculateDebt = calculateDebtService.getById(calculateDebtId);
         existsDebtByDebtId(calculateDebtId);
-
-        List<PaymentPlan> paymentPlans = Algoritmo.calculatePaymentPlan(calculateDebt);
+        Algoritmo algoritmo = new Algoritmo(calculateDebt);
+        List<PaymentPlan> paymentPlans = algoritmo.calculatePaymentPlan(calculateDebt);
 
         // Guardar los planes de pago en la base de datos
         List<PaymentPlan> savedPaymentPlans = paymentPlanService.guardarPlanesDePago(paymentPlans);

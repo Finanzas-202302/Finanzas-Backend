@@ -34,11 +34,11 @@ public class PaymentPlan {
     @Column(name = "due_date", nullable = false)
     private LocalDate dueDate;
 
-    @Column(name = "saldo_inicial", nullable = false)
-    private Double saldo_inicial;
+    @Column(name = "prestamo", nullable = false)
+    private Double prestamo;
 
-    @Column(name = "saldo_final", nullable = false)
-    private Double saldo_final;
+    @Column(name = "financiamiento", nullable = false)
+    private Double financiamiento;
 
     @Column(name = "interes", nullable = false)
     private Double interes;

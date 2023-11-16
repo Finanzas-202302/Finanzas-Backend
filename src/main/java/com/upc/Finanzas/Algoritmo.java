@@ -93,35 +93,36 @@ public class Algoritmo {
         Double interes_sobre_financiamiento;
         Double desgravamen_sobre_financiamiento;
         Double cuota_financiamiento;
-        Double saldo_inicial = financiamiento;
+        Double financiamiento_aux = financiamiento;
+        Double prestamo_aux = financiar;
         Double saldo_final = 0.0;
         //CREAMOS LA LISTA
         List<PaymentPlan> paymentPlans = new ArrayList<>();
         interes_sobre_financiamiento = tasa_de_interes * financiamiento;
         desgravamen_sobre_financiamiento = seguro_desgravamen_tasa * financiamiento;
 
-        for(int period_number = 1; period_number <= info.getTerm_of_loan(); period_number++){
+        for(int period_number = 0; period_number <= info.getTerm_of_loan(); period_number++){
             PaymentPlan paymentPlan = new PaymentPlan();
             paymentPlan.setCalculateDebt(info);
             paymentPlan.setPeriodNumber(period_number);
             LocalDate dueDate = LocalDate.now().plusMonths(period_number);
             paymentPlan.setDueDate(dueDate);
             // Calcular los componentes del pago mensual
-            interes = tasa_de_interes * financiar;
-            seguro_desgravamen = seguro_desgravamen_tasa * financiar;
-            cuota_financiamiento = (financiamiento * (tasa_de_interes + seguro_desgravamen_tasa)) / (1 - Math.pow((1 + (tasa_de_interes + seguro_desgravamen_tasa)), info.getTerm_of_loan() * -1));
-            amortizacion = cuota_financiamiento - financiamiento*tasa_de_interes - financiamiento*seguro_desgravamen_tasa;
-            saldo_final = saldo_inicial - amortizacion;
+            interes = tasa_de_interes * prestamo_aux;
+            seguro_desgravamen = seguro_desgravamen_tasa * prestamo_aux;
+            cuota_financiamiento = (financiamiento * (tasa_de_interes + seguro_desgravamen_tasa)) / (1 - Math.pow((1 + (tasa_de_interes + seguro_desgravamen_tasa)), (info.getTerm_of_loan() * -1)));
+            amortizacion = cuota_financiamiento - financiamiento_aux * tasa_de_interes - financiamiento_aux*seguro_desgravamen_tasa;
             // Configurar los valores en el objeto PaymentPlan
-            paymentPlan.setSaldo_inicial(saldo_inicial);
+            paymentPlan.setFinanciamiento(financiamiento_aux);
             paymentPlan.setInteres(interes);
             paymentPlan.setAmortizacion(amortizacion);
             paymentPlan.setSeguro_desgravamen(seguro_desgravamen);
             paymentPlan.setCuota_financiamiento(cuota_financiamiento);
-            paymentPlan.setSaldo_final(saldo_final);
-
+            paymentPlan.setPrestamo(prestamo_aux);
             paymentPlans.add(paymentPlan);
-            saldo_inicial = saldo_final;
+
+            financiamiento_aux = financiamiento_aux - amortizacion;
+            prestamo_aux = prestamo_aux - amortizacion;
         }
 
         return paymentPlans;
