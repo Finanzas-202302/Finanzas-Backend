@@ -1,23 +1,21 @@
 package com.upc.Finanzas.dto;
 
-import com.upc.Finanzas.model.CalculateDebt;
+import com.upc.Finanzas.model.Roles;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
+import java.time.LocalDate;
 
 @Data
-@Builder
-@NoArgsConstructor
 @AllArgsConstructor
-public class ClientDto {
+@NoArgsConstructor
+@Builder
+public class RegisterRequest {
     private String firstname;
     private String lastname;
     private String email;
-    private Long dni;
-    private String vehicle;
-    private Long userId;
-    private List<CalculateDebt> calculateDebts;
+    private String password;
+    private Roles role;
 }

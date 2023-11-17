@@ -37,6 +37,4 @@ public class Client {
     private User user;
     @OneToMany(mappedBy = "client", cascade = CascadeType.ALL)
     private List<CalculateDebt> calculateDebts;
-    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL)
-    private List<DebtResult> debtResults;
 }

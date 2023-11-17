@@ -33,11 +33,9 @@ public class ClientController {
     //Method: GET
     @Transactional(readOnly = true)
     @GetMapping
-    public ResponseEntity<List<ClientDto>> getAllClients(){
+    public ResponseEntity<List<Client>> getAllClients(){
         List<Client> clients = clientService.getAll();
-        return new ResponseEntity<List<ClientDto>>(clients.stream()
-                .map(this::convertToDto)
-                .collect(Collectors.toList()),HttpStatus.OK);
+        return new ResponseEntity<>(clients, HttpStatus.OK);
     }
 
     //URL:http://localhost:8080/api/bank/v1/clients/{clientId}
@@ -54,7 +52,7 @@ public class ClientController {
     //URL:http://localhost:8080/api/bank/v1/clients
     //Method: POST
     @Transactional
-    @PostMapping
+    @PostMapping("/register")
     public ResponseEntity<ClientDto> createClient(@RequestBody ClientDto clientDto){
         Client client = convertToEntity(clientDto);
         validateClient(client);
@@ -79,6 +77,7 @@ public class ClientController {
         client.setEmail(clientDto.getEmail());
         client.setDni(clientDto.getDni());
         client.setVehicle(clientDto.getVehicle());
+        client.setCalculateDebts(clientDto.getCalculateDebts());
 
         User user = userRepository.findById(clientDto.getUserId())
                 .orElseThrow(() -> new ResourceNotFoundException("No se encontró un usuario con el id " + clientDto.getUserId()));
@@ -94,11 +93,12 @@ public class ClientController {
                 .dni(client.getDni())
                 .vehicle(client.getVehicle())
                 .userId(client.getUser().getId())
+                .calculateDebts(client.getCalculateDebts())
                 .build();
     }
     private void existsClientByClientId(Long clientId){
         if(clientService.getById(clientId) == null){
-            throw new ResourceNotFoundException("No existe un cliente on el id " + clientId);
+            throw new ResourceNotFoundException("No existe un cliente con el id " + clientId);
         }
     }
     private void validateClient(Client client){

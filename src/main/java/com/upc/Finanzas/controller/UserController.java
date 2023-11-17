@@ -45,19 +45,6 @@ public class UserController {
         return new ResponseEntity<UserDto>(userDto, HttpStatus.OK);
     }
 
-    //URL:http://localhost:8080/api/bank/v1/users/register
-    //Method: POST
-    @Transactional
-    @PostMapping("/register")
-    public ResponseEntity<UserDto> createUser(@RequestBody UserDto userDto){
-        User user = convertToEntity(userDto);
-        validateUser(user);
-        existsUserByEmail(user);
-        User createdUser = userService.create(user);
-        UserDto createdUserDto = convertToDto(createdUser);
-        return new ResponseEntity<>(createdUserDto, HttpStatus.CREATED);
-    }
-
     //URL:http://localhost:8080/api/bank/v1/users/{userId}
     //Method: DELETE
     @Transactional
@@ -74,6 +61,7 @@ public class UserController {
         user.setLastname(userDto.getLastname());
         user.setEmail(userDto.getEmail());
         user.setPassword(userDto.getPassword());
+        user.setClients(userDto.getClients());
         return user;
     }
 
@@ -83,6 +71,7 @@ public class UserController {
                 .lastname(user.getLastname())
                 .email(user.getEmail())
                 .password(user.getPassword())
+                .clients(user.getClients())
                 .build();
     }
 
