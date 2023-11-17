@@ -1,5 +1,6 @@
 package com.upc.Finanzas.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.upc.Finanzas.model.CalculateDebt;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,5 +20,4 @@ public class ClientDto {
     private Long dni;
     private String vehicle;
     private Long userId;
-    private List<CalculateDebt> calculateDebts;
 }

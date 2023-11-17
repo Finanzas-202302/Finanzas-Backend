@@ -77,7 +77,6 @@ public class ClientController {
         client.setEmail(clientDto.getEmail());
         client.setDni(clientDto.getDni());
         client.setVehicle(clientDto.getVehicle());
-        client.setCalculateDebts(clientDto.getCalculateDebts());
 
         User user = userRepository.findById(clientDto.getUserId())
                 .orElseThrow(() -> new ResourceNotFoundException("No se encontró un usuario con el id " + clientDto.getUserId()));
@@ -93,7 +92,6 @@ public class ClientController {
                 .dni(client.getDni())
                 .vehicle(client.getVehicle())
                 .userId(client.getUser().getId())
-                .calculateDebts(client.getCalculateDebts())
                 .build();
     }
     private void existsClientByClientId(Long clientId){

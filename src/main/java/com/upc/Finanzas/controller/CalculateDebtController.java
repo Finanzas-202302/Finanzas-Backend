@@ -91,6 +91,13 @@ public class CalculateDebtController {
         debt.setSeguro_desgravamen(debtDto.getSeguro_desgravamen());
         debt.setVfmg_percentage(debtDto.getVfmg_percentage());
         debt.setCredit_percentage(debtDto.getCredit_percentage());
+        debt.setPortes(debtDto.getPortes());
+        debt.setGastos_administrativos(debtDto.getGastos_administrativos());
+        debt.setComision(debtDto.getComision());
+        debt.setPenalidad(debtDto.getPenalidad());
+        debt.setComunicacion(debtDto.getComunicacion());
+        debt.setSeguridad(debtDto.getSeguridad());
+        debt.setOtros(debtDto.getOtros());
         Client client = clientRepository.findById(debtDto.getCliendId())
                 .orElseThrow(() -> new ResourceNotFoundException("No se encontró un cliente con el id " + debtDto.getCliendId()));
         debt.setClient(client);
@@ -109,6 +116,13 @@ public class CalculateDebtController {
                 .vfmg_percentage(calculateDebt.getVfmg_percentage())
                 .credit_percentage(calculateDebt.getCredit_percentage())
                 .cliendId(calculateDebt.getClient().getId())
+                .portes(calculateDebt.getPortes())
+                .gastos_administrativos(calculateDebt.getGastos_administrativos())
+                .comision(calculateDebt.getComision())
+                .penalidad(calculateDebt.getPenalidad())
+                .comunicacion(calculateDebt.getComunicacion())
+                .seguridad(calculateDebt.getSeguridad())
+                .otros(calculateDebt.getOtros())
                 .build();
     }
     private void existsDebtByDebtId(Long calculateDebtId){
