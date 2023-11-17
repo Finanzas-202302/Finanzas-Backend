@@ -27,6 +27,8 @@ public class EnterDataDebtDto {
     private Double penalidad;
     private Double comunicacion;
     private Double seguridad;
+    private Double cok;
     private Double otros;
     private Long cliendId;
+    private Double van;
 }

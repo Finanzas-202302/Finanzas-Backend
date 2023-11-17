@@ -97,7 +97,9 @@ public class CalculateDebtController {
         debt.setPenalidad(debtDto.getPenalidad());
         debt.setComunicacion(debtDto.getComunicacion());
         debt.setSeguridad(debtDto.getSeguridad());
+        debt.setVAN(debtDto.getVan());
         debt.setOtros(debtDto.getOtros());
+        debt.setCOK(debtDto.getCok());
         Client client = clientRepository.findById(debtDto.getCliendId())
                 .orElseThrow(() -> new ResourceNotFoundException("No se encontró un cliente con el id " + debtDto.getCliendId()));
         debt.setClient(client);
@@ -122,6 +124,8 @@ public class CalculateDebtController {
                 .penalidad(calculateDebt.getPenalidad())
                 .comunicacion(calculateDebt.getComunicacion())
                 .seguridad(calculateDebt.getSeguridad())
+                .cok(calculateDebt.getCOK())
+                .van(calculateDebt.getVAN())
                 .otros(calculateDebt.getOtros())
                 .build();
     }

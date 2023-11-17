@@ -69,8 +69,10 @@ public class CalculateDebt {
     @Column(name = "credit_percentage", nullable = false, length = 10)
     private Long credit_percentage;
     // COK
-    @Column(name = "cok", nullable = true, length = 10)
+    @Column(name = "cok", nullable = true, length = 50)
     private Double COK;
+    @Column(name = "van", nullable = true, length = 50)
+    private Double VAN;
     // COSTOS INICIALES
     @Column(name = "costos_notariales", nullable = true, length = 25)
     private Double costos_notariales;

@@ -15,6 +15,7 @@ public class Algoritmo {
     private static Double cuota_inicial;
     private static Double financiar;
     private static Double interes;
+    private static Double COK;
     private static Double seguro_desgravamen;
     private static Double financiamiento;
     private static Double amortizacion;
@@ -31,6 +32,7 @@ public class Algoritmo {
         financiamiento = 0.0;
         cuota_final = 0.0;
         plazo = 0.0;
+        COK = 0.0;
         costo_prestamo = 0.0;
         seguro_desgravamen = 0.0;
         amortizacion = 0.0;
@@ -88,6 +90,7 @@ public class Algoritmo {
         financiar = costo_prestamo * (1.0 - info.getCuota_inicial_percentage()/100.0);
         financiamiento = costo_prestamo * info.getCredit_percentage()/100.0;
         seguro_desgravamen_tasa = info.getSeguro_desgravamen()/100.0;
+        COK = info.getCOK()/100.0;
     }
     public static List<PaymentPlan> calculatePaymentPlan(CalculateDebt calculateDebt){
         convertData();
@@ -105,6 +108,7 @@ public class Algoritmo {
         Double comunicacion = calculateDebt.getComunicacion();
         Double seguridad = calculateDebt.getSeguridad();
         Double otros = calculateDebt.getOtros();
+        Double VAN = 0.0;
         //CREAMOS LA LISTA
         List<PaymentPlan> paymentPlans = new ArrayList<>();
         interes_sobre_financiamiento = tasa_de_interes * financiamiento;
@@ -125,6 +129,7 @@ public class Algoritmo {
                 seguro_desgravamen = 0.0;
                 cuota_financiamiento = 0.0;
                 flujo_aux = prestamo_aux;
+                VAN += flujo_aux;
             }
             else {
                 if(period_number == (info.getTerm_of_loan() + 1)){
@@ -134,7 +139,8 @@ public class Algoritmo {
                     cuota_financiamiento = amortizacion + interes + seguro_desgravamen;
                     financiamiento_aux = 0.0;
                     prestamo_aux = 0.0;
-                    flujo_aux = cuota_financiamiento + portes + gastos_administrativos + comision + penalidad + comunicacion + seguridad + otros;
+                    flujo_aux = (cuota_financiamiento + portes + gastos_administrativos + comision + penalidad + comunicacion + seguridad + otros) * -1;
+                    VAN += (flujo_aux / Math.pow((1 + COK),period_number));
                 } else {
                     interes = tasa_de_interes * prestamo_aux;
                     seguro_desgravamen = seguro_desgravamen_tasa * prestamo_aux;
@@ -142,7 +148,8 @@ public class Algoritmo {
                     amortizacion = cuota_financiamiento - financiamiento_aux * tasa_de_interes - financiamiento_aux * seguro_desgravamen_tasa;
                     prestamo_aux = prestamo_aux - amortizacion;
                     financiamiento_aux = financiamiento_aux - amortizacion;
-                    flujo_aux = cuota_financiamiento + portes + gastos_administrativos + comision + penalidad + comunicacion + seguridad + otros;
+                    flujo_aux = (cuota_financiamiento + portes + gastos_administrativos + comision + penalidad + comunicacion + seguridad + otros) * -1;
+                    VAN += (flujo_aux / Math.pow((1 + COK),period_number));
                 }
             }
 
@@ -167,7 +174,7 @@ public class Algoritmo {
             paymentPlan.setComision(comision);
             paymentPlans.add(paymentPlan);
         }
-
+        calculateDebt.setVAN(VAN);
         return paymentPlans;
     }
 }
