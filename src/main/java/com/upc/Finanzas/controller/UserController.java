@@ -38,10 +38,11 @@ public class UserController {
     //Method: GET
     @Transactional(readOnly = true)
     @GetMapping("/{userId}")
-    public ResponseEntity<User> getUserById(@PathVariable(name = "userId") Long userId){
+    public ResponseEntity<UserDto> getUserById(@PathVariable(name = "userId") Long userId){
         existsUserByUserId(userId);
         User user = userService.getById(userId);
-        return new ResponseEntity<>(user, HttpStatus.OK);
+        UserDto userDto = convertToDto(user);
+        return new ResponseEntity<UserDto>(userDto, HttpStatus.OK);
     }
 
     //URL:http://localhost:8080/api/bank/v1/users/{userId}
@@ -60,6 +61,7 @@ public class UserController {
         user.setLastname(userDto.getLastname());
         user.setEmail(userDto.getEmail());
         user.setPassword(userDto.getPassword());
+        user.setClients(userDto.getClients());
         return user;
     }
 
@@ -69,6 +71,7 @@ public class UserController {
                 .lastname(user.getLastname())
                 .email(user.getEmail())
                 .password(user.getPassword())
+                .clients(user.getClients())
                 .build();
     }
 

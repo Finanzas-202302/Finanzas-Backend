@@ -42,10 +42,11 @@ public class ClientController {
     //Method: GET
     @Transactional(readOnly = true)
     @GetMapping("/{clientId}")
-    public ResponseEntity<Client> getClientById(@PathVariable(name = "clientId") Long clientId){
+    public ResponseEntity<ClientDto> getClientById(@PathVariable(name = "clientId") Long clientId){
         existsClientByClientId(clientId);
         Client client = clientService.getById(clientId);
-        return new ResponseEntity<>(client, HttpStatus.OK);
+        ClientDto clientDto = convertToDto(client);
+        return new ResponseEntity<ClientDto>(clientDto, HttpStatus.OK);
     }
 
     //URL:http://localhost:8080/api/bank/v1/clients
@@ -76,6 +77,7 @@ public class ClientController {
         client.setEmail(clientDto.getEmail());
         client.setDni(clientDto.getDni());
         client.setVehicle(clientDto.getVehicle());
+        client.setCalculateDebts(clientDto.getCalculateDebts());
 
         User user = userRepository.findById(clientDto.getUserId())
                 .orElseThrow(() -> new ResourceNotFoundException("No se encontró un usuario con el id " + clientDto.getUserId()));
@@ -91,6 +93,7 @@ public class ClientController {
                 .dni(client.getDni())
                 .vehicle(client.getVehicle())
                 .userId(client.getUser().getId())
+                .calculateDebts(client.getCalculateDebts())
                 .build();
     }
     private void existsClientByClientId(Long clientId){
