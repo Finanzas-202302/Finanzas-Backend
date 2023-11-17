@@ -1,5 +1,6 @@
 package com.upc.Finanzas.dto;
 
+import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,5 +21,12 @@ public class EnterDataDebtDto {
     private Double seguro_desgravamen;
     private Long vfmg_percentage;
     private Long credit_percentage;
+    private Double portes;
+    private Double gastos_administrativos;
+    private Double comision;
+    private Double penalidad;
+    private Double comunicacion;
+    private Double seguridad;
+    private Double otros;
     private Long cliendId;
 }

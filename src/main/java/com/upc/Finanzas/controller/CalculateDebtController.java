@@ -113,7 +113,7 @@ public class CalculateDebtController {
     }
     private void existsDebtByDebtId(Long calculateDebtId){
         if(calculateDebtService.getById(calculateDebtId) == null){
-            throw new ResourceNotFoundException("No existe ua deuda calculada    con el id " + calculateDebtId);
+            throw new ResourceNotFoundException("No existe una deuda calculada con el id " + calculateDebtId);
         }
     }
 }

@@ -42,4 +42,5 @@ public class PaymentPlanServiceImpl implements PaymentPlanService {
         // Guardar cada plan de pago en la base de datos
         return paymentPlanRepository.saveAll(paymentPlans);
     }
+
 }

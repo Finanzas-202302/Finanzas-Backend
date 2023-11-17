@@ -2,6 +2,7 @@ package com.upc.Finanzas;
 
 import com.upc.Finanzas.model.CalculateDebt;
 import com.upc.Finanzas.model.PaymentPlan;
+import org.hibernate.tool.schema.extract.spi.ExtractionContext;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -95,23 +96,56 @@ public class Algoritmo {
         Double cuota_financiamiento;
         Double financiamiento_aux = financiamiento;
         Double prestamo_aux = financiar;
+        Double flujo_aux = 0.0;
         Double saldo_final = 0.0;
+        Double portes = calculateDebt.getPortes();
+        Double gastos_administrativos = calculateDebt.getGastos_administrativos();
+        Double comision = calculateDebt.getComision();
+        Double penalidad = calculateDebt.getPenalidad();
+        Double comunicacion = calculateDebt.getComunicacion();
+        Double seguridad = calculateDebt.getSeguridad();
+        Double otros = calculateDebt.getOtros();
         //CREAMOS LA LISTA
         List<PaymentPlan> paymentPlans = new ArrayList<>();
         interes_sobre_financiamiento = tasa_de_interes * financiamiento;
         desgravamen_sobre_financiamiento = seguro_desgravamen_tasa * financiamiento;
 
-        for(int period_number = 0; period_number <= info.getTerm_of_loan(); period_number++){
+        for(int period_number = 0; period_number <= info.getTerm_of_loan() + 1; period_number++){
             PaymentPlan paymentPlan = new PaymentPlan();
             paymentPlan.setCalculateDebt(info);
             paymentPlan.setPeriodNumber(period_number);
             LocalDate dueDate = LocalDate.now().plusMonths(period_number);
             paymentPlan.setDueDate(dueDate);
             // Calcular los componentes del pago mensual
-            interes = tasa_de_interes * prestamo_aux;
-            seguro_desgravamen = seguro_desgravamen_tasa * prestamo_aux;
-            cuota_financiamiento = (financiamiento * (tasa_de_interes + seguro_desgravamen_tasa)) / (1 - Math.pow((1 + (tasa_de_interes + seguro_desgravamen_tasa)), (info.getTerm_of_loan() * -1)));
-            amortizacion = cuota_financiamiento - financiamiento_aux * tasa_de_interes - financiamiento_aux*seguro_desgravamen_tasa;
+            if(period_number == 0){
+                prestamo_aux = financiar;
+                financiamiento_aux = financiamiento;
+                amortizacion = 0.0;
+                interes = 0.0;
+                seguro_desgravamen = 0.0;
+                cuota_financiamiento = 0.0;
+                flujo_aux = prestamo_aux;
+            }
+            else {
+                interes = tasa_de_interes * prestamo_aux;
+                seguro_desgravamen = seguro_desgravamen_tasa * prestamo_aux;
+                cuota_financiamiento = (financiamiento * (tasa_de_interes + seguro_desgravamen_tasa)) / (1 - Math.pow((1 + (tasa_de_interes + seguro_desgravamen_tasa)), (info.getTerm_of_loan() * -1)));
+                amortizacion = cuota_financiamiento - financiamiento_aux * tasa_de_interes - financiamiento_aux * seguro_desgravamen_tasa;
+                prestamo_aux = prestamo_aux - amortizacion;
+                financiamiento_aux = financiamiento_aux - amortizacion;
+                flujo_aux = cuota_financiamiento + portes + gastos_administrativos + comision + penalidad + comunicacion + seguridad + otros;
+            }
+
+            if(period_number == (info.getTerm_of_loan() + 1)){
+                amortizacion = prestamo_aux;
+                interes = prestamo_aux * tasa_de_interes;
+                seguro_desgravamen = prestamo_aux * seguro_desgravamen_tasa;
+                cuota_financiamiento = amortizacion + interes + seguro_desgravamen;
+                financiamiento_aux = 0.0;
+                prestamo_aux = 0.0;
+                flujo_aux = cuota_financiamiento + portes + gastos_administrativos + comision + penalidad + comunicacion + seguridad + otros;
+            }
+
             // Configurar los valores en el objeto PaymentPlan
             paymentPlan.setFinanciamiento(financiamiento_aux);
             paymentPlan.setInteres(interes);
@@ -119,10 +153,15 @@ public class Algoritmo {
             paymentPlan.setSeguro_desgravamen(seguro_desgravamen);
             paymentPlan.setCuota_financiamiento(cuota_financiamiento);
             paymentPlan.setPrestamo(prestamo_aux);
+            paymentPlan.setFlujo_total(flujo_aux);
+            paymentPlan.setSeguridad(seguridad);
+            paymentPlan.setPortes(portes);
+            paymentPlan.setPenalidad(penalidad);
+            paymentPlan.setOtros(otros);
+            paymentPlan.setGastos_administrativos(gastos_administrativos);
+            paymentPlan.setComunicacion(comunicacion);
+            paymentPlan.setComision(comision);
             paymentPlans.add(paymentPlan);
-
-            financiamiento_aux = financiamiento_aux - amortizacion;
-            prestamo_aux = prestamo_aux - amortizacion;
         }
 
         return paymentPlans;

@@ -94,19 +94,19 @@ public class CalculateDebt {
     private Boolean otros_costes_bool;
     //COSTOS PERIODICOS
     @Column(name = "portes", nullable = true, length = 25)
-    private Boolean portes;
+    private Double portes;
     @Column(name = "gastos_administrativos", nullable = true, length = 25)
-    private Boolean gastos_administrativos;
+    private Double gastos_administrativos;
     @Column(name = "comision", nullable = true, length = 25)
-    private Boolean comision;
+    private Double comision;
     @Column(name = "penalidad", nullable = true, length = 25)
-    private Boolean penalidad;
+    private Double penalidad;
     @Column(name = "comunicacion", nullable = true, length = 25)
-    private Boolean comunicacion;
+    private Double comunicacion;
     @Column(name = "seguridad", nullable = true, length = 25)
-    private Boolean seguridad;
+    private Double seguridad;
     @Column(name = "otros", nullable = true, length = 25)
-    private Boolean otros;
+    private Double otros;
     //relaciones
     @ManyToOne
     @JoinColumn(name = "client_id", nullable = false,

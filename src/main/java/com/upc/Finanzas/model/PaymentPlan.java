@@ -39,6 +39,8 @@ public class PaymentPlan {
 
     @Column(name = "financiamiento", nullable = false)
     private Double financiamiento;
+    @Column(name = "flujo_total", nullable = false)
+    private Double flujo_total;
 
     @Column(name = "interes", nullable = false)
     private Double interes;
@@ -51,5 +53,26 @@ public class PaymentPlan {
 
     @Column(name = "seguro_desgravamen", nullable = false)
     private Double seguro_desgravamen;
+
+    @Column(name = "portes", nullable = false, length = 25)
+    private Double portes;
+
+    @Column(name = "gastos_administrativos", nullable = false, length = 25)
+    private Double gastos_administrativos;
+
+    @Column(name = "comision", nullable = false, length = 25)
+    private Double comision;
+
+    @Column(name = "penalidad", nullable = false, length = 25)
+    private Double penalidad;
+
+    @Column(name = "comunicacion", nullable = false, length = 25)
+    private Double comunicacion;
+
+    @Column(name = "seguridad", nullable = false, length = 25)
+    private Double seguridad;
+
+    @Column(name = "otros", nullable = false, length = 25)
+    private Double otros;
 
 }

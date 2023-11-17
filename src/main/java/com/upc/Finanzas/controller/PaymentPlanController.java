@@ -1,15 +1,14 @@
 package com.upc.Finanzas.controller;
 
+import com.upc.Finanzas.exception.ResourceNotFoundException;
 import com.upc.Finanzas.model.PaymentPlan;
 import com.upc.Finanzas.repository.PaymentPlanRepository;
+import com.upc.Finanzas.service.CalculateDebtService;
 import com.upc.Finanzas.service.PaymentPlanService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -19,6 +18,8 @@ import java.util.List;
 public class PaymentPlanController {
     @Autowired
     private PaymentPlanService paymentPlanService;
+    @Autowired
+    private CalculateDebtService calculateDebtService;
     private final PaymentPlanRepository paymentPlanRepository;
     public PaymentPlanController(PaymentPlanRepository paymentPlanRepository){
         this.paymentPlanRepository = paymentPlanRepository;
@@ -29,5 +30,11 @@ public class PaymentPlanController {
     public ResponseEntity<List<PaymentPlan>> getAllPaymentPlans() {
         List<PaymentPlan> paymentPlans = paymentPlanService.getAll();
         return new ResponseEntity<>(paymentPlans, HttpStatus.OK);
+    }
+
+    private void existsPaymentPlanByCalculateDebtId(Long calculateDebtId){
+        if(calculateDebtService.getById(calculateDebtId) == null){
+            throw new ResourceNotFoundException("No existe una deuda calculada con el id: " + calculateDebtId);
+        }
     }
 }

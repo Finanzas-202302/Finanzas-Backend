@@ -44,19 +44,6 @@ public class UserController {
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
-    //URL:http://localhost:8080/api/bank/v1/users/register
-    //Method: POST
-    @Transactional
-    @PostMapping("/register")
-    public ResponseEntity<UserDto> createUser(@RequestBody UserDto userDto){
-        User user = convertToEntity(userDto);
-        validateUser(user);
-        existsUserByEmail(user);
-        User createdUser = userService.create(user);
-        UserDto createdUserDto = convertToDto(createdUser);
-        return new ResponseEntity<>(createdUserDto, HttpStatus.CREATED);
-    }
-
     //URL:http://localhost:8080/api/bank/v1/users/{userId}
     //Method: DELETE
     @Transactional
