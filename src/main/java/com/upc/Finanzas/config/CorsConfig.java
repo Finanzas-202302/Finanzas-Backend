@@ -13,8 +13,8 @@ public class CorsConfig{
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/*")
-                        .allowedOrigins("http://localhost:4200")
+                registry.addMapping("/api/bank/v1/**")
+                        .allowedOrigins("*")
                         .allowedMethods("*")
                         .allowedHeaders("*");
 
