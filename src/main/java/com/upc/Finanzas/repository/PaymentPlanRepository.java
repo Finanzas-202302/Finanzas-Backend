@@ -9,4 +9,5 @@ public interface PaymentPlanRepository extends JpaRepository<PaymentPlan, Long> 
     boolean existsById(Long paymentPlanId);
     PaymentPlan findPaymentPlanById(Long id);
     List<PaymentPlan> findAll();
+    List<PaymentPlan> findByCalculateDebtId(Long calculateDebtId);
 }

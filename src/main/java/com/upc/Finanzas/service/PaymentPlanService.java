@@ -12,4 +12,5 @@ public interface PaymentPlanService {
     public abstract PaymentPlan update(PaymentPlan paymentPlan);
     public abstract void delete(Long paymentPlanId);
     public abstract List<PaymentPlan> guardarPlanesDePago(List<PaymentPlan> paymentPlans);
+    public abstract List<PaymentPlan> getByCalculateDebtId(Long calculateDebtId);
 }

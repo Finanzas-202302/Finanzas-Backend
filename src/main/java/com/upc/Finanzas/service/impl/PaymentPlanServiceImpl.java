@@ -23,6 +23,13 @@ public class PaymentPlanServiceImpl implements PaymentPlanService {
     }
 
     @Override
+    public List<PaymentPlan> getByCalculateDebtId(Long calculateDebtId) {
+        // Aquí asumo que tienes un método en tu repositorio llamado findByCalculateDebtId
+        // que busca los PaymentPlan asociados a un CalculateDebt por su ID.
+        return paymentPlanRepository.findByCalculateDebtId(calculateDebtId);
+    }
+
+    @Override
     public List<PaymentPlan> getAll() {
         return paymentPlanRepository.findAll();
     }

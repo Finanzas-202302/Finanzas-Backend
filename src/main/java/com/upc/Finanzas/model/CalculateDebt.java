@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,6 +34,8 @@ public class CalculateDebt {
     //CAPITALIZACION ESPECIAL
     @Column(name = "capitalizacion_especial", nullable = true, length = 10)
     private Integer capitalizacion_especial;
+    @Column(name = "fecha_prestamo", nullable = false)
+    private LocalDate fecha_prestamo;
     // PLAZO DE TASA: MENSUAL, BIMESTRAL, ETC
     @Column(name = "plazo_tasa_interes", nullable = false, length = 25)
     private String plazo_tasa_interes;
@@ -47,7 +50,7 @@ public class CalculateDebt {
     @Column(name = "grace_period", nullable = true, length = 25)
     private Long grace_period;
     // TIPO DE PERIODO DE GRACIA: PARCIAL, TOTAL O SIN PERIODO DE GRACIA
-    @Column(name = "type_grace_period", nullable = true, length = 25)
+    @Column(name = "type_grace_period", nullable = false, length = 25)
     private String type_grace_period;
     /////////////////////////
     // PORCENTAJE DE CUOTA INICIAL: 20% O 30%
@@ -73,6 +76,8 @@ public class CalculateDebt {
     private Double COK;
     @Column(name = "van", nullable = true, length = 50)
     private Double VAN;
+    @Column(name = "tir", nullable = true, length = 50)
+    private Double TIR;
     // COSTOS INICIALES
     @Column(name = "costos_notariales", nullable = true, length = 25)
     private Double costos_notariales;

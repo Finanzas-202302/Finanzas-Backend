@@ -1,18 +1,14 @@
 package com.upc.Finanzas.controller;
 
 import com.upc.Finanzas.Algoritmo;
-import com.upc.Finanzas.dto.ClientDto;
 import com.upc.Finanzas.dto.EnterDataDebtDto;
 import com.upc.Finanzas.exception.ResourceNotFoundException;
 import com.upc.Finanzas.model.CalculateDebt;
 import com.upc.Finanzas.model.Client;
 import com.upc.Finanzas.model.PaymentPlan;
-import com.upc.Finanzas.model.User;
 import com.upc.Finanzas.repository.CalculateDebtRepository;
 import com.upc.Finanzas.repository.ClientRepository;
-import com.upc.Finanzas.repository.UserRepository;
 import com.upc.Finanzas.service.CalculateDebtService;
-import com.upc.Finanzas.service.ClientService;
 import com.upc.Finanzas.service.PaymentPlanService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -79,11 +75,23 @@ public class CalculateDebtController {
 
         return new ResponseEntity<>(savedPaymentPlans, HttpStatus.OK);
     }
+    @Transactional
+    @DeleteMapping("/{calculateDebtId}")
+    public ResponseEntity<String> deleteDebt(@PathVariable(name = "calculateDebtId") Long calculateDebtId) {
+        existsDebtByDebtId(calculateDebtId);
+        calculateDebtService.delete(calculateDebtId);
+        return new ResponseEntity<>("La deuda calculada con ID " + calculateDebtId + " ha sido eliminada correctamente.", HttpStatus.OK);
+    }
     private CalculateDebt convertToEntity(EnterDataDebtDto debtDto){
         CalculateDebt debt = new CalculateDebt();
         debt.setCoin(debtDto.getCoin());
         debt.setInterest_rate(debtDto.getInterest_rate());
         debt.setInterest_rate_percentage(debtDto.getInterest_rate_percentage());
+        debt.setPeriodo_de_capitalizacion(debtDto.getPeriodo_de_capitalizacion());
+        debt.setCapitalizacion_especial(debtDto.getCapitalizacion_especial());
+        debt.setPlazo_interes_especial(debtDto.getPlazo_interes_especial());
+        debt.setType_grace_period(debtDto.getType_grace_period());
+        debt.setGrace_period(debtDto.getGrace_period());
         debt.setCuota_inicial_percentage(debtDto.getCuota_inicial_percentage());
         debt.setTerm_of_loan(debtDto.getTerm_of_loan());
         debt.setCost_vehicle(debtDto.getCost_vehicle());
@@ -91,13 +99,25 @@ public class CalculateDebtController {
         debt.setSeguro_desgravamen(debtDto.getSeguro_desgravamen());
         debt.setVfmg_percentage(debtDto.getVfmg_percentage());
         debt.setCredit_percentage(debtDto.getCredit_percentage());
+        debt.setCostos_notariales(debtDto.getCostos_notariales());
+        debt.setCostos_notariales_bool(debtDto.getCostos_notariales_bool());
+        debt.setCostos_registrales(debtDto.getCostos_registrales());
+        debt.setCostos_registrales_bool(debtDto.getCostos_registrales_bool());
+        debt.setTasacion(debtDto.getTasacion());
+        debt.setTasacion_bool(debtDto.getTasacion_bool());
+        debt.setEstudio_de_titulos(debtDto.getEstudio_de_titulos());
+        debt.setEstudio_de_titulos_bool(debtDto.getEstudio_de_titulos_bool());
+        debt.setOtros_costes(debtDto.getOtros_costes());
+        debt.setOtros_costes_bool(debtDto.getOtros_costes_bool());
         debt.setPortes(debtDto.getPortes());
         debt.setGastos_administrativos(debtDto.getGastos_administrativos());
         debt.setComision(debtDto.getComision());
         debt.setPenalidad(debtDto.getPenalidad());
         debt.setComunicacion(debtDto.getComunicacion());
         debt.setSeguridad(debtDto.getSeguridad());
-        debt.setVAN(debtDto.getVan());
+        debt.setVAN(debtDto.getVAN());
+        debt.setTIR(debtDto.getTIR());
+        debt.setFecha_prestamo(debtDto.getFecha_prestamo());
         debt.setOtros(debtDto.getOtros());
         debt.setCOK(debtDto.getCok());
         Client client = clientRepository.findById(debtDto.getCliendId())
@@ -109,7 +129,11 @@ public class CalculateDebtController {
         return EnterDataDebtDto.builder()
                 .coin(calculateDebt.getCoin())
                 .interest_rate(calculateDebt.getInterest_rate())
+                .periodo_de_capitalizacion(calculateDebt.getPeriodo_de_capitalizacion())
+                .capitalizacion_especial(calculateDebt.getCapitalizacion_especial())
                 .plazo_tasa_interes(calculateDebt.getPlazo_tasa_interes())
+                .fecha_prestamo(calculateDebt.getFecha_prestamo())
+                .plazo_interes_especial(calculateDebt.getPlazo_interes_especial())
                 .interest_rate_percentage(calculateDebt.getInterest_rate_percentage())
                 .cuota_inicial_percentage(calculateDebt.getCuota_inicial_percentage())
                 .cost_vehicle(calculateDebt.getCost_vehicle())
@@ -117,6 +141,8 @@ public class CalculateDebtController {
                 .seguro_desgravamen(calculateDebt.getSeguro_desgravamen())
                 .vfmg_percentage(calculateDebt.getVfmg_percentage())
                 .credit_percentage(calculateDebt.getCredit_percentage())
+                .type_grace_period(calculateDebt.getType_grace_period())
+                .grace_period(calculateDebt.getGrace_period())
                 .cliendId(calculateDebt.getClient().getId())
                 .portes(calculateDebt.getPortes())
                 .gastos_administrativos(calculateDebt.getGastos_administrativos())
@@ -124,8 +150,20 @@ public class CalculateDebtController {
                 .penalidad(calculateDebt.getPenalidad())
                 .comunicacion(calculateDebt.getComunicacion())
                 .seguridad(calculateDebt.getSeguridad())
+                .costos_notariales(calculateDebt.getCostos_notariales())
+                .costos_notariales_bool(calculateDebt.getCostos_notariales_bool())
+                .costos_registrales(calculateDebt.getCostos_registrales())
+                .costos_registrales_bool(calculateDebt.getCostos_registrales_bool())
+                .tasacion(calculateDebt.getTasacion())
+                .tasacion_bool(calculateDebt.getTasacion_bool())
+                .estudio_de_titulos(calculateDebt.getEstudio_de_titulos())
+                .estudio_de_titulos_bool(calculateDebt.getEstudio_de_titulos_bool())
+                .otros_costes(calculateDebt.getOtros_costes())
+                .otros_costes_bool(calculateDebt.getOtros_costes_bool())
                 .cok(calculateDebt.getCOK())
-                .van(calculateDebt.getVAN())
+                .VAN(calculateDebt.getVAN())
+                .TIR(calculateDebt.getTIR())
+                .cok(calculateDebt.getCOK())
                 .otros(calculateDebt.getOtros())
                 .build();
     }

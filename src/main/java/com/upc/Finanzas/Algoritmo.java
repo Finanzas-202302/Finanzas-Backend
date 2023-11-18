@@ -65,24 +65,24 @@ public class Algoritmo {
 
         //COSTOS INICIALES DE LA COMPRA INTELIGENTE
         if(info.getCostos_notariales() != null){
-            if(info.getCostos_notariales_bool()) costo_prestamo += info.getCostos_notariales();
-            else costo_prestamo += 0.0;
+            if(info.getCostos_notariales_bool()) financiar += info.getCostos_notariales();
+            else financiar += 0.0;
         }
         if(info.getCostos_registrales() != null){
-            if(info.getCostos_registrales_bool()) costo_prestamo += info.getCostos_registrales();
-            else costo_prestamo += 0.0;
+            if(info.getCostos_registrales_bool()) financiar += info.getCostos_registrales();
+            else financiar += 0.0;
         }
         if(info.getTasacion() != null){
-            if(info.getTasacion_bool()) costo_prestamo += info.getTasacion();
-            else costo_prestamo += 0.0;
+            if(info.getTasacion_bool()) financiar += info.getTasacion();
+            else financiar += 0.0;
         }
         if(info.getEstudio_de_titulos() != null){
-            if(info.getEstudio_de_titulos_bool()) costo_prestamo += info.getEstudio_de_titulos();
-            else costo_prestamo += 0.0;
+            if(info.getEstudio_de_titulos_bool()) financiar += info.getEstudio_de_titulos();
+            else financiar += 0.0;
         }
         if(info.getOtros_costes() != null){
-            if(info.getOtros_costes_bool()) costo_prestamo += info.getOtros_costes();
-            else costo_prestamo += 0.0;
+            if(info.getOtros_costes_bool()) financiar += info.getOtros_costes();
+            else financiar += 0.0;
         }
         costo_vehiculo = Double.valueOf(info.getCost_vehicle());
         costo_prestamo += costo_vehiculo;
@@ -109,6 +109,7 @@ public class Algoritmo {
         Double seguridad = calculateDebt.getSeguridad();
         Double otros = calculateDebt.getOtros();
         Double VAN = 0.0;
+        LocalDate fecha_inicial = calculateDebt.getFecha_prestamo();
         //CREAMOS LA LISTA
         List<PaymentPlan> paymentPlans = new ArrayList<>();
         interes_sobre_financiamiento = tasa_de_interes * financiamiento;
@@ -118,7 +119,7 @@ public class Algoritmo {
             PaymentPlan paymentPlan = new PaymentPlan();
             paymentPlan.setCalculateDebt(info);
             paymentPlan.setPeriodNumber(period_number);
-            LocalDate dueDate = LocalDate.now().plusMonths(period_number);
+            LocalDate dueDate = fecha_inicial.plusMonths(period_number);
             paymentPlan.setDueDate(dueDate);
             // Calcular los componentes del pago mensual
             if(period_number == 0){
@@ -175,6 +176,7 @@ public class Algoritmo {
             paymentPlans.add(paymentPlan);
         }
         calculateDebt.setVAN(VAN);
+        //calculateDebt.setTIR(convertTIR(calculateDebt, paymentPlans));
         return paymentPlans;
     }
 }

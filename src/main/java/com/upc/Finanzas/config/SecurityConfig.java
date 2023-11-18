@@ -30,7 +30,8 @@ public class SecurityConfig {
                                 "/api/bank/v1/clients/**",
                                 "/api/bank/v1/calculate-debt",
                                 "/api/bank/v1/calculate-debt/**",
-                                "/api/bank/v1/payment-plans")
+                                "/api/bank/v1/payment-plans",
+                                "/api/bank/v1/payment-plans/**")
                         .permitAll()
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**",
                                 "/swagger-ui.html")

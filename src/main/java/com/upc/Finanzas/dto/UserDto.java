@@ -1,5 +1,6 @@
 package com.upc.Finanzas.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.upc.Finanzas.model.Client;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
