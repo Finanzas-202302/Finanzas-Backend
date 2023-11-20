@@ -1,5 +1,6 @@
 package com.upc.Finanzas.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -30,11 +31,12 @@ public class Client {
     @Column(name = "vehicle", nullable = false, length = 25)
     private String vehicle;
     //relaciones
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false,
             foreignKey = @ForeignKey(name = "FK_CLIENT_USER_ID"))
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private User user;
     @OneToMany(mappedBy = "client", cascade = CascadeType.ALL)
-    private List<CalculateDebt> calculateDebts;
+    private List<Credit> credits;
 }

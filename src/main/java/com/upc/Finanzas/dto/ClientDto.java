@@ -1,7 +1,7 @@
 package com.upc.Finanzas.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.upc.Finanzas.model.CalculateDebt;
+import com.upc.Finanzas.model.Credit;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,4 +20,6 @@ public class ClientDto {
     private Long dni;
     private String vehicle;
     private Long userId;
+    @JsonIgnore
+    private List<Credit> credits;
 }
