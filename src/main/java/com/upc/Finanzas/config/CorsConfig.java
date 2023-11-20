@@ -17,7 +17,7 @@ public class CorsConfig{
                         .allowedOrigins("http://localhost:4200")
                         .allowedMethods("*")
                         .allowedHeaders("*");
-
+                 System.out.println("CORS configuration applied successfully.");
             }
         };
     }
