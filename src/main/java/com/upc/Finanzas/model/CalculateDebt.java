@@ -76,8 +76,6 @@ public class CalculateDebt {
     private Double COK;
     @Column(name = "van", nullable = true, length = 50)
     private Double VAN;
-    @Column(name = "tir", nullable = true, length = 50)
-    private Double TIR;
     // COSTOS INICIALES
     @Column(name = "costos_notariales", nullable = true, length = 25)
     private Double costos_notariales;

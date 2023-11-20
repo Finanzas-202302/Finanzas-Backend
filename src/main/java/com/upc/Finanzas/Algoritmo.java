@@ -108,6 +108,7 @@ public class Algoritmo {
         Double comunicacion = calculateDebt.getComunicacion();
         Double seguridad = calculateDebt.getSeguridad();
         Double otros = calculateDebt.getOtros();
+        int periodoGracia = Math.toIntExact(calculateDebt.getGrace_period());
         Double VAN = 0.0;
         LocalDate fecha_inicial = calculateDebt.getFecha_prestamo();
         //CREAMOS LA LISTA
@@ -122,58 +123,106 @@ public class Algoritmo {
             LocalDate dueDate = fecha_inicial.plusMonths(period_number);
             paymentPlan.setDueDate(dueDate);
             // Calcular los componentes del pago mensual
-            if(period_number == 0){
-                prestamo_aux = financiar;
-                financiamiento_aux = financiamiento;
-                amortizacion = 0.0;
-                interes = 0.0;
-                seguro_desgravamen = 0.0;
-                cuota_financiamiento = 0.0;
-                flujo_aux = prestamo_aux;
-                VAN += flujo_aux;
-            }
-            else {
-                if(period_number == (info.getTerm_of_loan() + 1)){
-                    amortizacion = prestamo_aux;
-                    interes = prestamo_aux * tasa_de_interes;
-                    seguro_desgravamen = prestamo_aux * seguro_desgravamen_tasa;
-                    cuota_financiamiento = amortizacion + interes + seguro_desgravamen;
-                    financiamiento_aux = 0.0;
-                    prestamo_aux = 0.0;
-                    flujo_aux = (cuota_financiamiento + portes + gastos_administrativos + comision + penalidad + comunicacion + seguridad + otros) * -1;
-                    VAN += (flujo_aux / Math.pow((1 + COK),period_number));
-                } else {
-                    interes = tasa_de_interes * prestamo_aux;
-                    seguro_desgravamen = seguro_desgravamen_tasa * prestamo_aux;
-                    cuota_financiamiento = (financiamiento * (tasa_de_interes + seguro_desgravamen_tasa)) / (1 - Math.pow((1 + (tasa_de_interes + seguro_desgravamen_tasa)), (info.getTerm_of_loan() * -1)));
-                    amortizacion = cuota_financiamiento - financiamiento_aux * tasa_de_interes - financiamiento_aux * seguro_desgravamen_tasa;
-                    prestamo_aux = prestamo_aux - amortizacion;
-                    financiamiento_aux = financiamiento_aux - amortizacion;
-                    flujo_aux = (cuota_financiamiento + portes + gastos_administrativos + comision + penalidad + comunicacion + seguridad + otros) * -1;
-                    VAN += (flujo_aux / Math.pow((1 + COK),period_number));
+            if(period_number <= periodoGracia){
+                if (calculateDebt.getType_grace_period().equals("total")){
+                    if(period_number == 0){
+                        prestamo_aux = financiar;
+                        financiamiento_aux = financiamiento;
+                        amortizacion = 0.0;
+                        interes = 0.0;
+                        seguro_desgravamen = 0.0;
+                        cuota_financiamiento = 0.0;
+                        flujo_aux = prestamo_aux;
+                        VAN += flujo_aux;
+                    }
+                    else {
+                            interes = tasa_de_interes * prestamo_aux;
+                            seguro_desgravamen = seguro_desgravamen_tasa * prestamo_aux;
+                            cuota_financiamiento = 0.0;
+                            amortizacion = 0.0;
+                            prestamo_aux = prestamo_aux - amortizacion;
+                            financiamiento_aux = financiamiento_aux + interes;
+                            flujo_aux = (cuota_financiamiento + portes + gastos_administrativos + comision + penalidad + comunicacion + seguridad + otros) * -1;
+                            VAN += (flujo_aux / Math.pow((1 + COK),period_number));
+                    }
+                }
+                else if(calculateDebt.getType_grace_period().equals("parcial")){
+                    if(period_number == 0){
+                        prestamo_aux = financiar;
+                        financiamiento_aux = financiamiento;
+                        amortizacion = 0.0;
+                        interes = 0.0;
+                        seguro_desgravamen = 0.0;
+                        cuota_financiamiento = 0.0;
+                        flujo_aux = prestamo_aux;
+                        VAN += flujo_aux;
+                    }
+                    else {
+                        interes = tasa_de_interes * prestamo_aux;
+                        seguro_desgravamen = seguro_desgravamen_tasa * prestamo_aux;
+                        cuota_financiamiento = interes;
+                        amortizacion = 0.0;
+                        prestamo_aux = prestamo_aux - amortizacion;
+                        financiamiento_aux = financiamiento_aux - amortizacion;
+                        flujo_aux = (cuota_financiamiento + portes + gastos_administrativos + comision + penalidad + comunicacion + seguridad + otros) * -1;
+                        VAN += (flujo_aux / Math.pow((1 + COK),period_number));
+                    }
                 }
             }
+            else{
+                if(period_number == 0){
+                    prestamo_aux = financiar;
+                    financiamiento_aux = financiamiento;
+                    amortizacion = 0.0;
+                    interes = 0.0;
+                    seguro_desgravamen = 0.0;
+                    cuota_financiamiento = 0.0;
+                    flujo_aux = prestamo_aux;
+                    VAN += flujo_aux;
+                }
+                else {
+                    if(period_number == (info.getTerm_of_loan() + 1)){
+                        amortizacion = prestamo_aux;
+                        interes = prestamo_aux * tasa_de_interes;
+                        seguro_desgravamen = prestamo_aux * seguro_desgravamen_tasa;
+                        cuota_financiamiento = amortizacion + interes + seguro_desgravamen;
+                        financiamiento_aux = 0.0;
+                        prestamo_aux = 0.0;
+                        flujo_aux = (cuota_financiamiento + portes + gastos_administrativos + comision + penalidad + comunicacion + seguridad + otros) * -1;
+                        VAN += (flujo_aux / Math.pow((1 + COK),period_number));
+                    } else {
+                        interes = tasa_de_interes * prestamo_aux;
+                        seguro_desgravamen = seguro_desgravamen_tasa * prestamo_aux;
+                        cuota_financiamiento = (financiamiento * (tasa_de_interes + seguro_desgravamen_tasa)) / (1 - Math.pow((1 + (tasa_de_interes + seguro_desgravamen_tasa)), (info.getTerm_of_loan() * -1)));
+                        amortizacion = cuota_financiamiento - financiamiento_aux * tasa_de_interes - financiamiento_aux * seguro_desgravamen_tasa;
+                        prestamo_aux = prestamo_aux - amortizacion;
+                        financiamiento_aux = financiamiento_aux - amortizacion;
+                        flujo_aux = (cuota_financiamiento + portes + gastos_administrativos + comision + penalidad + comunicacion + seguridad + otros) * -1;
+                        VAN += (flujo_aux / Math.pow((1 + COK),period_number));
+                    }
+                }
 
-            if(period_number == info.getTerm_of_loan()) {
-                financiamiento_aux = Math.floor(financiamiento_aux);
+                if(period_number == info.getTerm_of_loan()) {
+                    financiamiento_aux = Math.floor(financiamiento_aux);
+                }
+
+                // Configurar los valores en el objeto PaymentPlan
+                paymentPlan.setFinanciamiento(financiamiento_aux);
+                paymentPlan.setInteres(interes);
+                paymentPlan.setAmortizacion(amortizacion);
+                paymentPlan.setSeguro_desgravamen(seguro_desgravamen);
+                paymentPlan.setCuota_financiamiento(cuota_financiamiento);
+                paymentPlan.setPrestamo(prestamo_aux);
+                paymentPlan.setFlujo_total(flujo_aux);
+                paymentPlan.setSeguridad(seguridad);
+                paymentPlan.setPortes(portes);
+                paymentPlan.setPenalidad(penalidad);
+                paymentPlan.setOtros(otros);
+                paymentPlan.setGastos_administrativos(gastos_administrativos);
+                paymentPlan.setComunicacion(comunicacion);
+                paymentPlan.setComision(comision);
+                paymentPlans.add(paymentPlan);
             }
-
-            // Configurar los valores en el objeto PaymentPlan
-            paymentPlan.setFinanciamiento(financiamiento_aux);
-            paymentPlan.setInteres(interes);
-            paymentPlan.setAmortizacion(amortizacion);
-            paymentPlan.setSeguro_desgravamen(seguro_desgravamen);
-            paymentPlan.setCuota_financiamiento(cuota_financiamiento);
-            paymentPlan.setPrestamo(prestamo_aux);
-            paymentPlan.setFlujo_total(flujo_aux);
-            paymentPlan.setSeguridad(seguridad);
-            paymentPlan.setPortes(portes);
-            paymentPlan.setPenalidad(penalidad);
-            paymentPlan.setOtros(otros);
-            paymentPlan.setGastos_administrativos(gastos_administrativos);
-            paymentPlan.setComunicacion(comunicacion);
-            paymentPlan.setComision(comision);
-            paymentPlans.add(paymentPlan);
         }
         calculateDebt.setVAN(VAN);
         //calculateDebt.setTIR(convertTIR(calculateDebt, paymentPlans));

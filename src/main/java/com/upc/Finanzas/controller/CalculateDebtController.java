@@ -116,7 +116,6 @@ public class CalculateDebtController {
         debt.setComunicacion(debtDto.getComunicacion());
         debt.setSeguridad(debtDto.getSeguridad());
         debt.setVAN(debtDto.getVAN());
-        debt.setTIR(debtDto.getTIR());
         debt.setFecha_prestamo(debtDto.getFecha_prestamo());
         debt.setOtros(debtDto.getOtros());
         debt.setCOK(debtDto.getCok());
@@ -162,7 +161,6 @@ public class CalculateDebtController {
                 .otros_costes_bool(calculateDebt.getOtros_costes_bool())
                 .cok(calculateDebt.getCOK())
                 .VAN(calculateDebt.getVAN())
-                .TIR(calculateDebt.getTIR())
                 .cok(calculateDebt.getCOK())
                 .otros(calculateDebt.getOtros())
                 .build();

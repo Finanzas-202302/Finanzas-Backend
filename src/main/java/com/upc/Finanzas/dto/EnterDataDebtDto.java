@@ -31,7 +31,6 @@ public class EnterDataDebtDto {
     private String type_grace_period;
     private Long grace_period;
     //
-    private Double TIR;
     private Double VAN;
     private Double cok;
     //COSTOS INICIALES
